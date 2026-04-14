@@ -1,61 +1,183 @@
-body {
+let camera, scene, renderer;
+let controls;
 
-margin: 0;
-overflow: hidden;
-font-family: Arial;
-background: black;
+let objects = [];
+let targets = { sphere: [] };
+
+/* Real periodic elements (first 30) */
+
+const elements = [
+
+["H","Hydrogen"],
+["He","Helium"],
+["Li","Lithium"],
+["Be","Beryllium"],
+["B","Boron"],
+["C","Carbon"],
+["N","Nitrogen"],
+["O","Oxygen"],
+["F","Fluorine"],
+["Ne","Neon"],
+["Na","Sodium"],
+["Mg","Magnesium"],
+["Al","Aluminium"],
+["Si","Silicon"],
+["P","Phosphorus"],
+["S","Sulfur"],
+["Cl","Chlorine"],
+["Ar","Argon"],
+["K","Potassium"],
+["Ca","Calcium"],
+["Sc","Scandium"],
+["Ti","Titanium"],
+["V","Vanadium"],
+["Cr","Chromium"],
+["Mn","Manganese"],
+["Fe","Iron"],
+["Co","Cobalt"],
+["Ni","Nickel"],
+["Cu","Copper"],
+["Zn","Zinc"]
+
+];
+
+init();
+animate();
+
+function init() {
+
+camera = new THREE.PerspectiveCamera(
+40,
+window.innerWidth / window.innerHeight,
+1,
+10000
+);
+
+camera.position.z = 3000;
+
+scene = new THREE.Scene();
+
+createElements();
+createSphere();
+
+renderer =
+new THREE.CSS3DRenderer();
+
+renderer.setSize(
+window.innerWidth,
+window.innerHeight
+);
+
+document
+.getElementById("container")
+.appendChild(renderer.domElement);
+
+/* Mouse rotation */
+
+controls =
+new THREE.TrackballControls(
+camera,
+renderer.domElement
+);
+
+controls.rotateSpeed = 4;
 
 }
 
-#menu {
+function createElements() {
 
-position: absolute;
-top: 20px;
-width: 100%;
-text-align: center;
-z-index: 1;
+for (let i = 0; i < elements.length; i++) {
+
+let element =
+document.createElement("div");
+
+element.className = "element";
+
+let number =
+document.createElement("div");
+
+number.className = "number";
+number.textContent = i + 1;
+
+let symbol =
+document.createElement("div");
+
+symbol.className = "symbol";
+symbol.textContent = elements[i][0];
+
+let name =
+document.createElement("div");
+
+name.className = "name";
+name.textContent = elements[i][1];
+
+element.appendChild(number);
+element.appendChild(symbol);
+element.appendChild(name);
+
+let object =
+new THREE.CSS3DObject(element);
+
+scene.add(object);
+
+objects.push(object);
 
 }
 
-button {
+}
 
-padding: 10px 18px;
-margin: 5px;
+function createSphere() {
 
-background: #111;
-color: white;
+let radius = 800;
 
-border: none;
-border-radius: 6px;
+for (let i = 0; i < objects.length; i++) {
 
-cursor: pointer;
+let phi =
+Math.acos(-1 + (2 * i) / objects.length);
+
+let theta =
+Math.sqrt(objects.length * Math.PI) * phi;
+
+let object =
+new THREE.Object3D();
+
+object.position.x =
+radius * Math.cos(theta) * Math.sin(phi);
+
+object.position.y =
+radius * Math.sin(theta) * Math.sin(phi);
+
+object.position.z =
+radius * Math.cos(phi);
+
+targets.sphere.push(object);
 
 }
 
-button:hover {
-
-background: #00ff88;
-color: black;
+transform();
 
 }
 
-.element {
+function transform() {
 
-width: 80px;
-height: 100px;
+for (let i = 0; i < objects.length; i++) {
 
-box-shadow: 0 0 12px rgba(0,255,128,0.6);
+let object = objects[i];
 
-border-radius: 10px;
+let target = targets.sphere[i];
 
-text-align: center;
+object.position.copy(target.position);
 
-background: rgba(0,255,128,0.1);
+}
 
-color: white;
+}
 
-padding-top: 10px;
+function animate() {
 
-font-size: 18px;
+requestAnimationFrame(animate);
+
+controls.update();
+
+renderer.render(scene, camera);
 
 }
