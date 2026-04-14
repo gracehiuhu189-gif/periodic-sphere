@@ -1,183 +1,81 @@
-let camera, scene, renderer;
-let controls;
+body {
 
-let objects = [];
-let targets = { sphere: [] };
-
-/* Real periodic elements (first 30) */
-
-const elements = [
-
-["H","Hydrogen"],
-["He","Helium"],
-["Li","Lithium"],
-["Be","Beryllium"],
-["B","Boron"],
-["C","Carbon"],
-["N","Nitrogen"],
-["O","Oxygen"],
-["F","Fluorine"],
-["Ne","Neon"],
-["Na","Sodium"],
-["Mg","Magnesium"],
-["Al","Aluminium"],
-["Si","Silicon"],
-["P","Phosphorus"],
-["S","Sulfur"],
-["Cl","Chlorine"],
-["Ar","Argon"],
-["K","Potassium"],
-["Ca","Calcium"],
-["Sc","Scandium"],
-["Ti","Titanium"],
-["V","Vanadium"],
-["Cr","Chromium"],
-["Mn","Manganese"],
-["Fe","Iron"],
-["Co","Cobalt"],
-["Ni","Nickel"],
-["Cu","Copper"],
-["Zn","Zinc"]
-
-];
-
-init();
-animate();
-
-function init() {
-
-camera = new THREE.PerspectiveCamera(
-40,
-window.innerWidth / window.innerHeight,
-1,
-10000
-);
-
-camera.position.z = 3000;
-
-scene = new THREE.Scene();
-
-createElements();
-createSphere();
-
-renderer =
-new THREE.CSS3DRenderer();
-
-renderer.setSize(
-window.innerWidth,
-window.innerHeight
-);
-
-document
-.getElementById("container")
-.appendChild(renderer.domElement);
-
-/* Mouse rotation */
-
-controls =
-new THREE.TrackballControls(
-camera,
-renderer.domElement
-);
-
-controls.rotateSpeed = 4;
+margin: 0;
+overflow: hidden;
+background: black;
+font-family: Arial;
 
 }
 
-function createElements() {
+#menu {
 
-for (let i = 0; i < elements.length; i++) {
-
-let element =
-document.createElement("div");
-
-element.className = "element";
-
-let number =
-document.createElement("div");
-
-number.className = "number";
-number.textContent = i + 1;
-
-let symbol =
-document.createElement("div");
-
-symbol.className = "symbol";
-symbol.textContent = elements[i][0];
-
-let name =
-document.createElement("div");
-
-name.className = "name";
-name.textContent = elements[i][1];
-
-element.appendChild(number);
-element.appendChild(symbol);
-element.appendChild(name);
-
-let object =
-new THREE.CSS3DObject(element);
-
-scene.add(object);
-
-objects.push(object);
+position: absolute;
+top: 20px;
+width: 100%;
+text-align: center;
+z-index: 1;
 
 }
 
-}
+button {
 
-function createSphere() {
+padding: 10px 18px;
+margin: 5px;
 
-let radius = 800;
+background: #111;
+color: white;
 
-for (let i = 0; i < objects.length; i++) {
+border: none;
+border-radius: 6px;
 
-let phi =
-Math.acos(-1 + (2 * i) / objects.length);
+cursor: pointer;
 
-let theta =
-Math.sqrt(objects.length * Math.PI) * phi;
-
-let object =
-new THREE.Object3D();
-
-object.position.x =
-radius * Math.cos(theta) * Math.sin(phi);
-
-object.position.y =
-radius * Math.sin(theta) * Math.sin(phi);
-
-object.position.z =
-radius * Math.cos(phi);
-
-targets.sphere.push(object);
+font-size: 16px;
 
 }
 
-transform();
+button:hover {
+
+background: #00ff88;
+color: black;
 
 }
 
-function transform() {
+.element {
 
-for (let i = 0; i < objects.length; i++) {
+width: 90px;
+height: 120px;
 
-let object = objects[i];
+border-radius: 10px;
 
-let target = targets.sphere[i];
+text-align: center;
 
-object.position.copy(target.position);
+background: rgba(0,255,128,0.12);
+
+color: white;
+
+box-shadow: 0 0 15px rgba(0,255,128,0.7);
+
+padding-top: 8px;
 
 }
 
+.symbol {
+
+font-size: 28px;
+font-weight: bold;
+
 }
 
-function animate() {
+.name {
 
-requestAnimationFrame(animate);
+font-size: 12px;
 
-controls.update();
+}
 
-renderer.render(scene, camera);
+.number {
+
+font-size: 12px;
+opacity: 0.6;
 
 }
